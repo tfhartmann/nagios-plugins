@@ -9,7 +9,7 @@
     The plugin was tested on Centos 6.3 with python 2.6.
     Needed python snmp binding (net-snmp-python). 
     
-    Copyright (C) 2013 - Tomer Azran
+    Copyright (C) 2012 - Tomer Azran
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -95,8 +95,8 @@ def check_netbotz(options):
     
     if options.type == "temp":
         oids = OID_MAP["TEMP"]
-        test_name = "Tempratue"
-        test_units = "C"        
+        test_name = "Temp"
+        test_units = "F"        
     else:
         oids = OID_MAP["HUMIDITY"]
         test_name = "Humidity"
@@ -154,14 +154,15 @@ def check_netbotz(options):
     
     for key in return_values.keys():
         desc += "%s %s test: %s%s " % (return_values[key]["name"],test_name,return_values[key]["value"],test_units)
-        if return_values[key]["value"] < return_values[key]["low_value"]:
+        if return_values[key]["value"] <= return_values[key]["low_value"]:
             ret_code = on_error_retcode
             desc += " - The %s value is LOWER than allowed treshold. " % test_name
-        elif return_values[key]["value"] > return_values[key]["high_value"]:
+        elif return_values[key]["value"] >= return_values[key]["high_value"]:
             ret_code = on_error_retcode
             desc += " - The %s value is HIGHER than allowed treshold. " % test_name
         
-        desc += " - The %s value is OK. " % test_name
+        else:
+            desc += " - The %s value is OK. " % test_name
     
     desc = desc.rstrip(" ").rstrip(",")
     
